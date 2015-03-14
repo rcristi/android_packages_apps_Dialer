@@ -54,6 +54,7 @@
     <string-array name="reverse_lookup_providers" translatable="false">
         <item>OpenCnam</item>
         <item>DasTelefonbuch</item>
+	<item>PagineBianche</item>
         <item>Gebeld</item>
         <item>WhitePages</item>
         <item>WhitePages_CA</item>
@@ -65,6 +66,7 @@
     <string-array name="reverse_lookup_provider_names" translatable="false">
         <item>OpenCnam (US)</item>
         <item>Das Telefonbuch (DE)</item>
+	<item>PagineBianche (IT)</item>
         <item>Gebeld (NL)</item>
         <item>WhitePages (US)</item>
         <item>WhitePages (CA)</item>
