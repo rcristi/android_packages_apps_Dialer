@@ -23,6 +23,7 @@ import com.android.dialer.lookup.gebeld.GebeldReverseLookup;
 import com.android.dialer.lookup.opencnam.OpenCnamReverseLookup;
 import com.android.dialer.lookup.whitepages.WhitePagesReverseLookup;
 import com.android.dialer.lookup.yellowpages.YellowPagesReverseLookup;
+import com.android.dialer.lookup.paginebianche.PagineBiancheReverseLookup;
 import com.android.dialer.lookup.zabasearch.ZabaSearchReverseLookup;
 
 import android.content.Context;
@@ -53,6 +54,8 @@ public abstract class ReverseLookup {
                 INSTANCE = new YellowPagesReverseLookup(context);
             } else if (provider.equals(LookupSettings.RLP_ZABASEARCH)) {
                 INSTANCE = new ZabaSearchReverseLookup(context);
+            } else if (provider.equals(LookupSettings.RLP_PAGINEBIANCHE)) {
+                INSTANCE = new PagineBiancheReverseLookup(context);
             } else if (provider.equals(LookupSettings.RLP_CYNGN_CHINESE)) {
                 INSTANCE = new CyngnChineseReverseLookup(context);
             } else if (provider.equals(LookupSettings.RLP_DASTELEFONBUCH)) {
@@ -82,6 +85,9 @@ public abstract class ReverseLookup {
             return true;
         } else if (provider.equals(LookupSettings.RLP_CYNGN_CHINESE)
                 && INSTANCE instanceof CyngnChineseReverseLookup) {
+            return true;
+        } else if (provider.equals(LookupSettings.RLP_PAGINEBIANCHE)
+                && INSTANCE instanceof PagineBiancheReverseLookup) {
             return true;
         } else if (provider.equals(LookupSettings.RLP_DASTELEFONBUCH)
                 && INSTANCE instanceof TelefonbuchReverseLookup) {
