@@ -29,6 +29,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.apache.commons.lang3.text.WordUtils;
 
 import java.io.IOException;
 import java.util.regex.Matcher;
@@ -39,6 +40,8 @@ public class PagineBiancheApi {
 
     private static final String REVERSE_LOOKUP_URL =
        "http://www.paginebianche.it/ricerca-da-numero?";
+   private static final String PEOPLE_LOOKUP_URL =
+       "http://www.paginebianche.it/ricerca?";
 
     private PagineBiancheApi() {
     }
@@ -82,6 +85,22 @@ public class PagineBiancheApi {
         return info;
     }
 
+    public static ContactInfo[] peopleLookup(Context context, String name,
+            int maxResults) throws IOException {
+        String provider = LookupSettings.getPeopleLookupProvider(context);
+
+        if (LookupSettings.PLP_PAGINEBIANCHE.equals(provider)) {
+            Uri.Builder builder = Uri.parse(PEOPLE_LOOKUP_URL)
+                    .buildUpon();
+            builder.appendQueryParameter("qs", name);
+            String lookupUrl = builder.build().toString();
+            String output = httpGet(lookupUrl);
+            return parseOutputUnitedStates(output, maxResults);
+        }
+        // no-op
+        return null;
+    }
+
     private static String httpGet(String url) throws IOException {
         HttpClient client = new DefaultHttpClient();
         HttpGet get = new HttpGet(url);
@@ -109,12 +128,119 @@ public class PagineBiancheApi {
         return EntityUtils.toString(response.getEntity());
     }
 
+
+    private static ContactInfo[] parseOutputItaly(String output,
+            int maxResults) throws IOException {
+        ArrayList<ContactInfo> people = new ArrayList<ContactInfo>();
+
+        Pattern regex = Pattern.compile(
+                "<div\\s+class=\"item (?:item-first)? clearfix\\s*\"\\s+id=\"co_\d+\"", Pattern.DOTALL);
+        Matcher m = regex.matcher(output);
+
+        while (m.find()) {
+            if (people.size() == maxResults) {
+                break;
+            }
+
+            // Find section of HTML with contact information
+            String section = extractXmlTag(output, m.start(), m.end(), "div");
+
+            // Skip entries with no phone number
+            if (!section.contains("class=\"tel\"")) {
+                continue;
+            }
+
+            // Name
+            String name = parseName(section)
+
+            if (name == null) {
+                continue;
+            }
+
+            // Address
+            String address = parseAddress(section)
+            String city = parseCity(section)
+
+            // Phone number
+            String phoneNumber = parseNumber(section)
+
+            if (phoneNumber == null) {
+                Log.e(TAG, "Phone number is null. Either cookie is bad or regex is broken");
+                continue;
+            }
+
+            ContactInfo info = new ContactInfo();
+            info.name = name;
+            info.city = city;
+            info.address = address;
+            info.formattedNumber = phoneNumber;
+            info.website = website;
+
+            people.add(info);
+        }
+
+        return people.toArray(new ContactInfo[people.size()]);
+    }
+
+    private static String extractXmlRegex(String str, String regex, String tag) {
+        Pattern p = Pattern.compile(regex, Pattern.DOTALL);
+        Matcher m = p.matcher(str);
+        if (m.find()) {
+            return extractXmlTag(str, m.start(), m.end(), tag);
+        }
+        return null;
+    }
+
+    private static String extractXmlTag(String str, int realBegin, int begin,
+            String tag) {
+        int end = begin;
+        int tags = 1;
+        int maxLoop = 30;
+
+        while (tags > 0) {
+            end = str.indexOf(tag, end + 1);
+            if (end < 0 || maxLoop < 0) {
+                break;
+            }
+
+            if (str.charAt(end - 1) == '/'
+                    && str.charAt(end + tag.length()) == '>') {
+                tags--;
+            } else if (str.charAt(end - 1) == '<') {
+                tags++;
+            }
+
+            maxLoop--;
+        }
+
+        int realEnd = str.indexOf(">", end) + 1;
+
+        if (tags != 0) {
+            Log.e(TAG, "Failed to extract tag <" + tag + "> from XML/HTML");
+            return null;
+        }
+
+        return str.substring(realBegin, realEnd);
+    }
+
     private static String parseName(String output) {
         Pattern regex = Pattern.compile("\\stitle=\"(.*?)\"");
         Matcher m = regex.matcher(output);
 
         if (m.find()) {
-            return m.group(1);
+            String name = m.group(1);
+            return WordUtils.capitalizeFully(name);
+        }
+
+        return null;
+    }
+
+    private static String parseWebsite(String output) {
+        Pattern regex = Pattern.compile("<a\\sclass=\"lmap\"\\srel=\"nofollow\"\\shref=\"(.*?)\">\\s*mappa</a>");
+        Matcher m = regex.matcher(output);
+
+        if (m.find()) {
+            return "http://www.paginebianche.it" + m.group(1);
         }
 
         return null;
@@ -124,7 +250,13 @@ public class PagineBiancheApi {
         Pattern regex = Pattern.compile("class=\"tel\".*?class=\"value\">(.*?)<");
         Matcher m = regex.matcher(output);
         if (m.find()) {
-            return m.group(1);
+            String number = m.group(1);
+
+            if (!number.contains("+39")) {
+                return "+39 " + number;
+            }
+
+            return number;
         }
 
         return null;
@@ -134,7 +266,17 @@ public class PagineBiancheApi {
         Pattern regex = Pattern.compile("class=\"street-address\">(.*?)</div>");
         Matcher m = regex.matcher(output);
         if (m.find()) {
-            return m.group(1).replaceAll("</?span.*?>", "");
+            return m.group(1).replaceAll("</?span.*?>", "") + " - Italia";
+        }
+
+        return null;
+    }
+
+    private static String parseCity(String output) {
+        Pattern regex = Pattern.compile("<span\\sclass=\"locality\">(.*?)</span>");
+        Matcher m = regex.matcher(output);
+        if (m.find()) {
+            return m.group(1);
         }
 
         return null;
