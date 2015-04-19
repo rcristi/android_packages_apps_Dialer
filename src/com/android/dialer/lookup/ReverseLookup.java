@@ -20,6 +20,7 @@ import com.android.dialer.calllog.ContactInfo;
 import com.android.dialer.lookup.cyngn.CyngnChineseReverseLookup;
 import com.android.dialer.lookup.dastelefonbuch.TelefonbuchReverseLookup;
 import com.android.dialer.lookup.paginebianche.PagineBiancheReverseLookup;
+import com.android.dialer.lookup.gebeld.GebeldReverseLookup;
 import com.android.dialer.lookup.opencnam.OpenCnamReverseLookup;
 import com.android.dialer.lookup.whitepages.WhitePagesReverseLookup;
 import com.android.dialer.lookup.yellowpages.YellowPagesReverseLookup;
@@ -59,6 +60,8 @@ public abstract class ReverseLookup {
                 INSTANCE = new TelefonbuchReverseLookup(context);
             } else if (provider.equals(LookupSettings.RLP_PAGINEBIANCHE)) {
                 INSTANCE = new PagineBiancheReverseLookup(context);
+            } else if (provider.equals(LookupSettings.RLP_GEBELD)) {
+                INSTANCE = new GebeldReverseLookup(context);
             }
         }
 
@@ -88,6 +91,9 @@ public abstract class ReverseLookup {
             return true;
         } else if (provider.equals(LookupSettings.RLP_PAGINEBIANCHE)
                 && INSTANCE instanceof PagineBiancheReverseLookup) {
+                return true;
+        } else if (provider.equals(LookupSettings.RLP_GEBELD)
+                && INSTANCE instanceof GebeldReverseLookup) {
             return true;
         } else {
             return false;
