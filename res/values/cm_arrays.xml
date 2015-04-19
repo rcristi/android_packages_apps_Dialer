@@ -54,11 +54,7 @@
     <string-array name="reverse_lookup_providers" translatable="false">
         <item>OpenCnam</item>
         <item>DasTelefonbuch</item>
-<<<<<<< HEAD
         <item>Gebeld</item>
-=======
-	<item>PagineBianche</item>
->>>>>>> 6980059... Add reverse lookup provider "PagineBianche" (IT).
         <item>WhitePages</item>
         <item>WhitePages_CA</item>
         <item>YellowPages</item>
@@ -69,11 +65,7 @@
     <string-array name="reverse_lookup_provider_names" translatable="false">
         <item>OpenCnam (US)</item>
         <item>Das Telefonbuch (DE)</item>
-<<<<<<< HEAD
         <item>Gebeld (NL)</item>
-=======
-	<item>PagineBianche (IT)</item>
->>>>>>> 6980059... Add reverse lookup provider "PagineBianche" (IT).
         <item>WhitePages (US)</item>
         <item>WhitePages (CA)</item>
         <item>YellowPages (US)</item>
