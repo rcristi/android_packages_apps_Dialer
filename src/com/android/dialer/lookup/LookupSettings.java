@@ -45,11 +45,7 @@ public final class LookupSettings {
     public static final String RLP_ZABASEARCH = "ZabaSearch";
     public static final String RLP_CYNGN_CHINESE = "CyngnChinese";
     public static final String RLP_DASTELEFONBUCH = "DasTelefonbuch";
-<<<<<<< HEAD
     public static final String RLP_GEBELD = "Gebeld";
-=======
-    public static final String RLP_PAGINEBIANCHE = "PagineBianche";
->>>>>>> 334536a... Add reverse lookup provider "PagineBianche" (IT).
     public static final String RLP_DEFAULT = RLP_OPENCNAM;
 
     private LookupSettings() {

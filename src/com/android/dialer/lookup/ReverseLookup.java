@@ -19,11 +19,7 @@ package com.android.dialer.lookup;
 import com.android.dialer.calllog.ContactInfo;
 import com.android.dialer.lookup.cyngn.CyngnChineseReverseLookup;
 import com.android.dialer.lookup.dastelefonbuch.TelefonbuchReverseLookup;
-<<<<<<< HEAD
 import com.android.dialer.lookup.gebeld.GebeldReverseLookup;
-=======
-import com.android.dialer.lookup.paginebianche.PagineBiancheReverseLookup;
->>>>>>> 334536a... Add reverse lookup provider "PagineBianche" (IT).
 import com.android.dialer.lookup.opencnam.OpenCnamReverseLookup;
 import com.android.dialer.lookup.whitepages.WhitePagesReverseLookup;
 import com.android.dialer.lookup.yellowpages.YellowPagesReverseLookup;
@@ -61,13 +57,8 @@ public abstract class ReverseLookup {
                 INSTANCE = new CyngnChineseReverseLookup(context);
             } else if (provider.equals(LookupSettings.RLP_DASTELEFONBUCH)) {
                 INSTANCE = new TelefonbuchReverseLookup(context);
-<<<<<<< HEAD
             } else if (provider.equals(LookupSettings.RLP_GEBELD)) {
                 INSTANCE = new GebeldReverseLookup(context);
-=======
-            } else if (provider.equals(LookupSettings.RLP_PAGINEBIANCHE)) {
-                INSTANCE = new PagineBiancheReverseLookup(context);
->>>>>>> 334536a... Add reverse lookup provider "PagineBianche" (IT).
             }
         }
 
@@ -95,13 +86,8 @@ public abstract class ReverseLookup {
         } else if (provider.equals(LookupSettings.RLP_DASTELEFONBUCH)
                 && INSTANCE instanceof TelefonbuchReverseLookup) {
             return true;
-<<<<<<< HEAD
         } else if (provider.equals(LookupSettings.RLP_GEBELD)
                 && INSTANCE instanceof GebeldReverseLookup) {
-=======
-        } else if (provider.equals(LookupSettings.RLP_PAGINEBIANCHE)
-                && INSTANCE instanceof PagineBiancheReverseLookup) {
->>>>>>> 334536a... Add reverse lookup provider "PagineBianche" (IT).
             return true;
         } else {
             return false;
