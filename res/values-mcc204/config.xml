@@ -18,5 +18,5 @@
 <!--Allow recording for country: Netherlands-->
 <!--Legal precedent source: http://blog.wetrecht.nl/telefoongesprekken-opnemen-als-bewijs-kan-dat/ -->
 <resources>
-
+    <bool name="call_recording_enabled">true</bool>
 </resources>
